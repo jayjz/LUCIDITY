@@ -16,7 +16,7 @@ LUCIDITY is the grant, the skill, the multi-agent cut, the wait loop, and the co
 |---|---|---|---|
 | 00 | Compatibility matrix | model dump | [toolkit/00-compatibility.md](toolkit/00-compatibility.md) |
 | 01 | Authorization envelope | `confirmation_policies` + Data Exfiltration | [toolkit/01-authorization-envelope.md](toolkit/01-authorization-envelope.md) |
-| 02 | SKILL.md architecture | Using skills + Context hygiene | [skills/lucidity-orchestration/SKILL.md](skills/lucidity-orchestration/SKILL.md) |
+| 02 | SKILL.md architecture | Using skills + Context hygiene | [SKILL.md](skills/lucidity-orchestration/SKILL.md) · [toolkit/02](toolkit/02-skill-md-architecture.md) |
 | 03 | Multi-agent refactor | `multi_agent` v2 `/root` | [toolkit/03-multi-agent-refactor.md](toolkit/03-multi-agent-refactor.md) |
 | 04 | Bounded monitor loop | `persistent_instructions` + `clock.sleep` | [toolkit/04-bounded-monitor-loop.md](toolkit/04-bounded-monitor-loop.md) |
 | 05 | State checkpoint | `token_budget` + `auto_compact_fallback_prompt` | [toolkit/05-state-checkpoint.md](toolkit/05-state-checkpoint.md) |
