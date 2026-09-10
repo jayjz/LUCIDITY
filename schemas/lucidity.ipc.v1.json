@@ -1,0 +1,18 @@
+{
+  "$schema": "lucidity.ipc.v1",
+  "message_type": "MESSAGE | FINAL_ANSWER | NEW_TASK | STATUS | BLOCKER | HEARTBEAT",
+  "to": "/root/<child-id>",
+  "from": "/root",
+  "task_name": "kebab-case-task",
+  "correlation_id": "uuid",
+  "parent_task_id": "uuid | null",
+  "status": "queued | running | blocked | done | failed",
+  "authorization_ref": "envelope://§4.act.edit",
+  "payload": {
+    "summary": "One human sentence. Spaces between words and numbers.",
+    "evidence": ["path:line facts only"],
+    "artifacts": ["notes/relative/path.md"],
+    "blocked_on": null,
+    "next": ["followup_task id if any"]
+  }
+}
