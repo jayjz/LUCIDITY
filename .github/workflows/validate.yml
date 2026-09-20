@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - feat/personal-codex-control-plane
+      - feat/p1-instruction-archaeology
 
 permissions:
   contents: read
@@ -34,6 +35,9 @@ jobs:
                   tomllib.load(handle)
               print(f"parsed {path}")
           PY
+
+      - name: Validate instruction archaeology
+        run: python3 scripts/validate_instruction_inventory.py
 
       - name: Check credential files are not tracked
         run: |
