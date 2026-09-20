@@ -4,7 +4,7 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage:
-  scripts/install.sh --home PATH [--apply]
+  bash scripts/install.sh --home PATH [--apply]
 
 Default mode is a dry run. --apply writes only LUCIDITY-managed files into
 the target CODEX_HOME.
@@ -45,9 +45,10 @@ done
 
 src_agents="$repo_root/codex/AGENTS.md"
 src_config="$repo_root/codex/config/base.toml"
+src_config_dir="$repo_root/codex/config"
 src_skills="$repo_root/skills"
 
-for required in "$src_agents" "$src_config" "$src_skills"; do
+for required in "$src_agents" "$src_config" "$src_config_dir" "$src_skills"; do
   [[ -e "$required" ]] || { echo "missing source: $required" >&2; exit 1; }
 done
 
@@ -80,6 +81,12 @@ show_tree_action() {
 echo "Target CODEX_HOME: $target_home"
 show_file_action "$src_agents" "$target_home/AGENTS.md"
 show_file_action "$src_config" "$target_home/config.toml"
+
+for profile in "$src_config_dir"/*.config.toml; do
+  [[ -e "$profile" ]] || continue
+  show_file_action "$profile" "$target_home/$(basename "$profile")"
+done
+
 show_tree_action "$src_skills" "$target_home/skills"
 echo "PRESERVE  $target_home/auth.json"
 echo "PRESERVE  runtime sessions/logs/state"
@@ -93,6 +100,12 @@ fi
 mkdir -p "$target_home"
 install -m 0644 "$src_agents" "$target_home/AGENTS.md"
 install -m 0644 "$src_config" "$target_home/config.toml"
+
+for profile in "$src_config_dir"/*.config.toml; do
+  [[ -e "$profile" ]] || continue
+  install -m 0644 "$profile" "$target_home/$(basename "$profile")"
+done
+
 mkdir -p "$target_home/skills"
 cp -a "$src_skills/." "$target_home/skills/"
 
