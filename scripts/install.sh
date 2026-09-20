@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage:
+  scripts/install.sh --home PATH [--apply]
+
+Default mode is a dry run. --apply writes only LUCIDITY-managed files into
+the target CODEX_HOME.
+
+The installer never copies, deletes, or modifies auth.json, sessions, logs,
+history, caches, or other account state.
+EOF
+}
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+target_home=""
+apply=0
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --home)
+      [[ $# -ge 2 ]] || { usage >&2; exit 2; }
+      target_home="$2"
+      shift 2
+      ;;
+    --apply)
+      apply=1
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "unknown argument: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+done
+
+[[ -n "$target_home" ]] || { echo "--home is required" >&2; exit 2; }
+
+src_agents="$repo_root/codex/AGENTS.md"
+src_config="$repo_root/codex/config/base.toml"
+src_skills="$repo_root/skills"
+
+for required in "$src_agents" "$src_config" "$src_skills"; do
+  [[ -e "$required" ]] || { echo "missing source: $required" >&2; exit 1; }
+done
+
+show_file_action() {
+  local src="$1"
+  local dst="$2"
+  if [[ ! -e "$dst" ]]; then
+    echo "ADD       $dst"
+  elif cmp -s "$src" "$dst"; then
+    echo "UNCHANGED $dst"
+  else
+    echo "UPDATE    $dst"
+    diff -u "$dst" "$src" || true
+  fi
+}
+
+show_tree_action() {
+  local src="$1"
+  local dst="$2"
+  if [[ ! -d "$dst" ]]; then
+    echo "ADD TREE  $dst"
+  elif diff -qr "$src" "$dst" >/dev/null; then
+    echo "UNCHANGED $dst"
+  else
+    echo "UPDATE    $dst"
+    diff -qr "$dst" "$src" || true
+  fi
+}
+
+echo "Target CODEX_HOME: $target_home"
+show_file_action "$src_agents" "$target_home/AGENTS.md"
+show_file_action "$src_config" "$target_home/config.toml"
+show_tree_action "$src_skills" "$target_home/skills"
+echo "PRESERVE  $target_home/auth.json"
+echo "PRESERVE  runtime sessions/logs/state"
+
+if [[ "$apply" -eq 0 ]]; then
+  echo
+  echo "Dry run only. Re-run with --apply to install."
+  exit 0
+fi
+
+mkdir -p "$target_home"
+install -m 0644 "$src_agents" "$target_home/AGENTS.md"
+install -m 0644 "$src_config" "$target_home/config.toml"
+mkdir -p "$target_home/skills"
+cp -a "$src_skills/." "$target_home/skills/"
+
+echo "Installed LUCIDITY-managed configuration into $target_home"
