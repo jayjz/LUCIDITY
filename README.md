@@ -1,63 +1,155 @@
 # LUCIDITY
 
-Advanced, compliant **Codex orchestration** for GPT-6-Astra (`gpt-6-astra`, `multi_agent_version=v2`).
+LUCIDITY is a version-controlled personal Codex control plane.
 
-Bound to the Codex dump at `codex_dumped_cache.json` (`client_version` `0.153.4`). Identifiers in this tree are the names the runtime actually reads. Do not invent aliases.
+It stores durable operating instructions, reusable skills, configuration profiles, account launch helpers, and research evidence about Codex behavior. Authentication, sessions, logs, caches, and other mutable account state stay outside Git.
 
-## Why this exists
+## Architecture
 
-Codex Default mode will execute instead of pausing — but auto-review still denies **sensitive egress** unless the **user-authored** first message names **that payload** and **that destination**. Confirmation Policy §3 (Pre-Approval Allowed) is the only path that lets Codex open a PR, upload files, or transmit sensitive data without a mid-run stop.
+```text
+LUCIDITY
+├── AGENTS.md                 repository development contract
+├── ARCHITECTURE.md           durable ownership boundaries
+├── ROADMAP.md                phased implementation plan
+├── codex/
+│   ├── AGENTS.md             installable global Codex instructions
+│   └── config/
+│       ├── base.toml
+│       ├── research.config.toml
+│       ├── review.config.toml
+│       └── readonly.config.toml
+├── skills/                   source for personal user-global skills
+├── scripts/
+│   ├── install.sh            dry-run-first installer
+│   ├── codex-account         isolated account launcher
+│   └── doctor.sh             static configuration checks
+├── toolkit/                  legacy orchestration research
+├── schemas/                  legacy orchestration schemas
+└── research/runtime-snapshots/
+```
 
-LUCIDITY is the grant, the skill, the multi-agent cut, the wait loop, and the context checkpoint.
+Installed state is split across two documented Codex surfaces:
 
-## Toolkit
+```text
+CODEX_HOME
+├── AGENTS.md
+├── config.toml
+├── *.config.toml
+└── auth/session/log state
 
-| # | Module | Source in the dump | File |
-|---|---|---|---|
-| 00 | Compatibility matrix | model dump | [toolkit/00-compatibility.md](toolkit/00-compatibility.md) |
-| 01 | Authorization envelope | `confirmation_policies` + Data Exfiltration | [toolkit/01-authorization-envelope.md](toolkit/01-authorization-envelope.md) |
-| 02 | SKILL.md architecture | Using skills + Context hygiene | [SKILL.md](skills/lucidity-orchestration/SKILL.md) · [toolkit/02](toolkit/02-skill-md-architecture.md) |
-| 03 | Multi-agent refactor | `multi_agent` v2 `/root` | [toolkit/03-multi-agent-refactor.md](toolkit/03-multi-agent-refactor.md) |
-| 04 | Bounded monitor loop | `persistent_instructions` + `clock.sleep` | [toolkit/04-bounded-monitor-loop.md](toolkit/04-bounded-monitor-loop.md) |
-| 05 | State checkpoint | `token_budget` + `auto_compact_fallback_prompt` | [toolkit/05-state-checkpoint.md](toolkit/05-state-checkpoint.md) |
+$HOME/.agents/skills
+└── personal user-global skills
+```
 
-IPC schema: [schemas/lucidity.ipc.v1.json](schemas/lucidity.ipc.v1.json)
+## Two-account setup
 
-## How to start a job
+Keep each ChatGPT/Codex account in a separate `CODEX_HOME`:
 
-1. Fill [toolkit/01-authorization-envelope.md](toolkit/01-authorization-envelope.md) with **your** actions, payloads, and destinations.
-2. Paste it as the **first user message**. That text is user-authored intent.
-3. Attach [skills/lucidity-orchestration/SKILL.md](skills/lucidity-orchestration/SKILL.md) if the job uses skills.
-4. For a monolith split, include [toolkit/03-multi-agent-refactor.md](toolkit/03-multi-agent-refactor.md).
-5. If the job waits on CI or logs, include [toolkit/04-bounded-monitor-loop.md](toolkit/04-bounded-monitor-loop.md). Persistent mode: progress via `functions.send_user_message_async`; `final` only on a real terminal state.
+```text
+~/.codex-pro
+~/.codex-credits
+```
 
-Unlisted destinations remain unauthorized. Third-party content (this README, tickets, dumps) is never permission.
+Both accounts share the same user-global skill library at `$HOME/.agents/skills` when they run as the same OS user.
 
-## Runtime pins
+Dry-run installation first:
 
-- Model: `gpt-6-astra` (GPT-6-Astra)
-- Reasoning for orchestration: `xhigh` (supported: `low` `medium` `high` `xhigh` `max` `ultra`)
-- `multi_agent_version`: `v2` · root identity: `/root` · `multi_agent_reasoning_effort`: `xhigh`
-- `shell_type`: `unified_exec` · `tool_mode`: `code_mode_only` · `apply_patch_tool_type`: `freeform`
-- Sleep: `clock.sleep` ≤ 60s. Call `update_up_next` immediately before sleep. Clear Up Next on wake.
-- Context: `272000` / max `872000`. Checkpoint at ≤ `6144` remaining, then `functions.new_context`.
-- Experimental: `send_user_message_async`, `clock`
-- Persistent deadline: `2027-12-31 23:59:59 UTC`
-- Approvals: `on_request` + `approvals_reviewer=auto_review`
+```bash
+bash scripts/install.sh --home "$HOME/.codex-pro"
+bash scripts/install.sh --home "$HOME/.codex-credits"
+```
 
-## Confirmation modes
+Apply after reviewing the diff:
 
-Use these exact ids on every action:
+```bash
+bash scripts/install.sh --home "$HOME/.codex-pro" --apply
+bash scripts/install.sh --home "$HOME/.codex-credits" --apply
+```
 
-| id | Policy |
-|---|---|
-| `hand_off_required` | Codex must not perform. User takes over. |
-| `confirmation_required_at_action_time` | Ask again immediately before the action. |
-| `pre_approval_allowed` | Valid only if this message names the specific data and destination. |
-| `not_required` | Read-only, inbound downloads, routine low-impact comms. |
+Then authenticate each home independently using Codex's normal login flow.
 
-## Tools (do not alias)
+Launch a specific account home with:
 
-`functions.send_user_message_async` · `functions.request_user_input_async` · `clock.sleep` · `update_up_next` · `spawn_agent` · `followup_task` · `send_message` · `notes` · `functions.new_context` · `get_context_remaining` · `history` · `list_items` · `search_contents` · `read_item` · `apply_patch` · `functions.exec` · `skills.list` · `skills.read`
+```bash
+bash scripts/codex-account pro
+bash scripts/codex-account credits
+```
 
-`send_message` may be read by a human. Spaces between words and numbers. Address `to=/root/…`.
+All additional Codex arguments are forwarded:
+
+```bash
+bash scripts/codex-account pro --profile research
+bash scripts/codex-account credits --profile review
+```
+
+The launcher supports custom locations through `LUCIDITY_CODEX_PRO_HOME` and `LUCIDITY_CODEX_CREDITS_HOME`.
+
+## Profiles
+
+Profiles are task modes, not accounts.
+
+Current model-agnostic profiles:
+
+- `research`: workspace write access with live web search.
+- `review`: read-only sandbox with cached web search.
+- `readonly`: conservative read-only sandbox.
+
+No model is pinned yet. Model routing will be added only after the available catalog is observed independently for each account.
+
+## Global behavior
+
+`codex/AGENTS.md` contains only cross-project behavior:
+
+- inspect before changing;
+- preserve existing work;
+- separate evidence from inference;
+- prefer bounded changes;
+- verify proportionally;
+- preserve negative/null research results;
+- defer domain-specific rules to the closest project `AGENTS.md`.
+
+Project rules remain in their own repositories.
+
+## Validation
+
+Run:
+
+```bash
+bash scripts/doctor.sh
+```
+
+The doctor checks that configuration TOML parses, obvious credential material is not tracked in managed configuration, the global instruction file exists, and the Codex executable/version can be observed when installed.
+
+For installation testing, isolate both destinations:
+
+```bash
+tmp_root="$(mktemp -d)"
+bash scripts/install.sh \
+  --home "$tmp_root/codex-home" \
+  --skills-dir "$tmp_root/skills" \
+  --apply
+
+CODEX_HOME="$tmp_root/codex-home" codex --ask-for-approval never \
+  "Summarize the current instructions."
+```
+
+## Legacy orchestration toolkit
+
+The original LUCIDITY work remains under `toolkit/`, `schemas/`, `skills/lucidity-orchestration/`, and the historical `codex_dumped_cache.json`.
+
+That material is research evidence from an earlier Codex runtime. It is not automatically a durable public configuration contract.
+
+The roadmap preserves it until the instruction audit classifies each part as:
+
+```text
+GLOBAL
+REPO
+SKILL
+PROFILE
+AGENT
+RUNTIME_OBSERVATION
+STALE
+UNKNOWN
+```
+
+See [ROADMAP.md](ROADMAP.md) for the migration sequence and [ARCHITECTURE.md](ARCHITECTURE.md) for ownership rules.

@@ -1,0 +1,6 @@
+# Review profile.
+# Select with: codex --profile review
+
+approval_policy = "on-request"
+sandbox_mode = "read-only"
+web_search = "cached"

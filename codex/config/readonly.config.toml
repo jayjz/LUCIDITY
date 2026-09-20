@@ -1,0 +1,6 @@
+# Conservative read-only profile.
+# Select with: codex --profile readonly
+
+approval_policy = "on-request"
+sandbox_mode = "read-only"
+web_search = "cached"

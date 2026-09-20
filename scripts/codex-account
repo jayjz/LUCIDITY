@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage:
+  scripts/codex-account pro [codex args...]
+  scripts/codex-account credits [codex args...]
+
+Environment overrides:
+  LUCIDITY_CODEX_PRO_HOME
+  LUCIDITY_CODEX_CREDITS_HOME
+EOF
+}
+
+[[ $# -ge 1 ]] || { usage >&2; exit 2; }
+account="$1"
+shift
+
+case "$account" in
+  pro)
+    codex_home="${LUCIDITY_CODEX_PRO_HOME:-$HOME/.codex-pro}"
+    ;;
+  credits)
+    codex_home="${LUCIDITY_CODEX_CREDITS_HOME:-$HOME/.codex-credits}"
+    ;;
+  *)
+    echo "unknown account: $account" >&2
+    usage >&2
+    exit 2
+    ;;
+esac
+
+export CODEX_HOME="$codex_home"
+exec codex "$@"

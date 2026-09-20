@@ -1,0 +1,13 @@
+# LUCIDITY base Codex configuration.
+# Account authentication and model availability are intentionally excluded.
+# Install as $CODEX_HOME/config.toml only after reviewing the generated diff.
+
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "cached"
+
+# Keep the global contract concise while allowing richer project instructions.
+project_doc_max_bytes = 65536
+
+[agents]
+enabled = true
