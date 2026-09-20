@@ -16,6 +16,8 @@ Do not use destructive git or filesystem operations unless the user explicitly r
 
 Keep unrelated changes out of the requested work.
 
+Never commit credentials, access tokens, private keys, passwords, or other secrets. Avoid printing secret material into logs or durable artifacts.
+
 ## Make bounded changes
 
 Prefer the smallest coherent change that satisfies the requested outcome.
