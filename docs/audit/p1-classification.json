@@ -1,0 +1,593 @@
+{
+  "schema_version": "p1-instruction-classification.v1",
+  "generated_at_utc": "2026-09-20",
+  "scope": {
+    "repositories": [
+      "jayjz/CipherLoop",
+      "jayjz/SHAD0W",
+      "jayjz/TEMPER",
+      "jayjz/evidence-strategy-skills",
+      "jayjz/BuildBlock",
+      "jayjz/LUCIDITY"
+    ],
+    "exclusions": [
+      "Conversation-only prompts without a stable repository artifact or immutable source locator",
+      "Third-party skill libraries not yet imported into LUCIDITY",
+      "Account-specific model availability, credit behavior, rate limits, and service-tier behavior not observed in this phase"
+    ]
+  },
+  "classification_rules": {
+    "GLOBAL": "Durable cross-project behavior with broad applicability, low conflict risk, and a supported Codex instruction mechanism.",
+    "REPO": "Domain, architecture, phase, toolchain, or source-of-truth rule whose correctness depends on one repository.",
+    "SKILL": "Repeatable procedure or domain method that should load only when its user job matches.",
+    "PROFILE": "Task-mode configuration overlay; not an account identity and not a behavioral procedure.",
+    "AGENT": "Bounded delegated role requiring distinct instructions, tools, permissions, or configuration.",
+    "RUNTIME_OBSERVATION": "Observed internal/runtime behavior useful as evidence but not a stable public contract.",
+    "STALE": "Instruction or assumption that is outdated, redundant, over-broad, or conflicts with the current architecture.",
+    "UNKNOWN": "Potentially relevant behavior lacking enough current evidence to promote or remove."
+  },
+  "promotion_gate": {
+    "required": [
+      "cross_repo_recurrence_or_explicit_user_preference",
+      "broad_applicability",
+      "low_conflict_risk",
+      "current_supported_mechanism",
+      "clear_owner_layer"
+    ],
+    "note": "Repetition alone is insufficient for GLOBAL promotion."
+  },
+  "sources": [
+    {
+      "id": "src-cipher-agents",
+      "repo": "jayjz/CipherLoop",
+      "path": "AGENTS.md",
+      "blob_sha": "38bccb7de84e1a862b17156c4ef3f34763085913",
+      "kind": "repo_instruction"
+    },
+    {
+      "id": "src-cipher-meta",
+      "repo": "jayjz/CipherLoop",
+      "path": "meta_loop.py",
+      "blob_sha": "8b48baaeab53c51c38b483efef0c8a23a1c72b24",
+      "kind": "repo_system_prompt"
+    },
+    {
+      "id": "src-shadow-agents",
+      "repo": "jayjz/SHAD0W",
+      "path": "AGENTS.md",
+      "blob_sha": "05d5d65d61a6c052f42a1e4cc7f401d358c595eb",
+      "kind": "repo_instruction"
+    },
+    {
+      "id": "src-temper-agents",
+      "repo": "jayjz/TEMPER",
+      "path": "AGENTS.md",
+      "blob_sha": "594aa5681e35e26e0b8ef823acd5e1d1084e98f1",
+      "kind": "repo_instruction"
+    },
+    {
+      "id": "src-ess-agents",
+      "repo": "jayjz/evidence-strategy-skills",
+      "path": "AGENTS.md",
+      "blob_sha": "a6fdb49c50dc94c66f3ddc4fabaf3bce8eb5c093",
+      "kind": "repo_instruction"
+    },
+    {
+      "id": "src-ess-skill-design",
+      "repo": "jayjz/evidence-strategy-skills",
+      "path": "docs/skill-design.md",
+      "blob_sha": "36d6d646b1087083faed955650427f5419c6d2bd",
+      "kind": "methodology"
+    },
+    {
+      "id": "src-ess-eval",
+      "repo": "jayjz/evidence-strategy-skills",
+      "path": "docs/evaluation-standard.md",
+      "blob_sha": "b19846de574602d9681af5c354e53650b5b30027",
+      "kind": "methodology"
+    },
+    {
+      "id": "src-ess-portability",
+      "repo": "jayjz/evidence-strategy-skills",
+      "path": "docs/portability.md",
+      "blob_sha": "b4fc40656bcd796baa8a1c5cae2cadbad0f97794",
+      "kind": "methodology"
+    },
+    {
+      "id": "src-buildblock-agents",
+      "repo": "jayjz/BuildBlock",
+      "path": "AGENTS.md",
+      "blob_sha": "81d7a8da6a6162e55970ca2926338a423f40aae0",
+      "kind": "repo_instruction"
+    },
+    {
+      "id": "src-lucidity-skill",
+      "repo": "jayjz/LUCIDITY",
+      "path": "skills/lucidity-orchestration/SKILL.md",
+      "blob_sha": "1e9ccdb912ccc05acac543119860ffd4c13372e1",
+      "kind": "legacy_skill"
+    },
+    {
+      "id": "src-lucidity-dump",
+      "repo": "jayjz/LUCIDITY",
+      "path": "codex_dumped_cache.json",
+      "blob_sha": null,
+      "kind": "runtime_snapshot"
+    }
+  ],
+  "items": [
+    {
+      "id": "GLOBAL-001",
+      "sources": [
+        "src-shadow-agents",
+        "src-ess-agents"
+      ],
+      "summary": "Preserve existing user or agent work; inspect before overwriting or destructive git operations.",
+      "classification": "GLOBAL",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "already_promoted",
+      "rationale": "Cross-repo recurrence, low conflict risk, and broadly applicable to coding work."
+    },
+    {
+      "id": "GLOBAL-002",
+      "sources": [
+        "src-ess-agents",
+        "src-buildblock-agents",
+        "src-temper-agents"
+      ],
+      "summary": "Do not claim tests, commands, evidence, or completion were verified unless actually observed.",
+      "classification": "GLOBAL",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "already_promoted",
+      "rationale": "Repeated verification discipline with negligible downside."
+    },
+    {
+      "id": "GLOBAL-003",
+      "sources": [
+        "src-ess-agents",
+        "src-shadow-agents",
+        "src-buildblock-agents"
+      ],
+      "summary": "Prefer the smallest justified change and require evidence before adding abstractions or infrastructure.",
+      "classification": "GLOBAL",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "already_promoted",
+      "rationale": "Recurring engineering principle across materially different projects."
+    },
+    {
+      "id": "GLOBAL-004",
+      "sources": [
+        "src-ess-agents"
+      ],
+      "summary": "Search before concluding a file, implementation, or convention does not exist.",
+      "classification": "GLOBAL",
+      "mechanism": "AGENTS",
+      "evidence_strength": "moderate",
+      "disposition": "already_promoted",
+      "rationale": "General repository hygiene and low conflict risk."
+    },
+    {
+      "id": "GLOBAL-005",
+      "sources": [
+        "src-ess-agents",
+        "src-temper-agents"
+      ],
+      "summary": "Separate evidence from inference, assumptions, unresolved questions, and conflict.",
+      "classification": "GLOBAL",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "already_promoted",
+      "rationale": "Useful across research, review, and technical reporting; phrased conditionally rather than forcing a schema."
+    },
+    {
+      "id": "GLOBAL-006",
+      "sources": [
+        "src-temper-agents",
+        "src-ess-agents"
+      ],
+      "summary": "Preserve negative and null research results and do not weaken evaluation criteria after seeing outcomes.",
+      "classification": "GLOBAL",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "already_promoted_conditional",
+      "rationale": "Broadly valid when Codex performs research/evaluation; global file scopes it under research discipline."
+    },
+    {
+      "id": "GLOBAL-007",
+      "sources": [
+        "src-shadow-agents",
+        "src-ess-agents",
+        "src-buildblock-agents"
+      ],
+      "summary": "Never commit credentials, tokens, private keys, or other secrets.",
+      "classification": "GLOBAL",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "promote_now",
+      "rationale": "Repeated explicit rule, universally applicable, and missing from the installable global contract."
+    },
+    {
+      "id": "CIPHER-001",
+      "sources": [
+        "src-cipher-agents"
+      ],
+      "summary": "All tactical tool execution must occur inside the cipherloop-sandbox with networking disabled.",
+      "classification": "REPO",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "retain_local",
+      "rationale": "Critical CipherLoop architecture/security invariant that would break unrelated repositories if global."
+    },
+    {
+      "id": "CIPHER-002",
+      "sources": [
+        "src-cipher-agents"
+      ],
+      "summary": "Use POSIX paths for sandbox execution and avoid os.path for container workloads.",
+      "classification": "REPO",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "retain_local",
+      "rationale": "Implementation-specific container boundary."
+    },
+    {
+      "id": "CIPHER-003",
+      "sources": [
+        "src-cipher-agents"
+      ],
+      "summary": "Compress/shear raw tool output rather than appending stdout directly to AuditState messages.",
+      "classification": "REPO",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "retain_local",
+      "rationale": "CipherLoop state-machine invariant."
+    },
+    {
+      "id": "CIPHER-004",
+      "sources": [
+        "src-cipher-agents"
+      ],
+      "summary": "Do not label a vulnerability VERIFIED without reproducible source, sink, and valid code slice.",
+      "classification": "REPO",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "retain_local_extract_generic_later",
+      "rationale": "Exact verification contract is CipherLoop-specific; generic finding hygiene is a future security-research skill candidate."
+    },
+    {
+      "id": "CIPHER-005",
+      "sources": [
+        "src-cipher-agents"
+      ],
+      "summary": "Read feature specs and require pytest before concluding a thread.",
+      "classification": "REPO",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "retain_local",
+      "rationale": "Assumes CipherLoop's spec layout and Python test runner."
+    },
+    {
+      "id": "CIPHER-006",
+      "sources": [
+        "src-cipher-agents"
+      ],
+      "summary": "Use /compact frequently to maintain context.",
+      "classification": "STALE",
+      "mechanism": "runtime_command",
+      "evidence_strength": "weak",
+      "disposition": "remove_when_repo_is_refreshed",
+      "rationale": "Runtime-specific command advice is not a durable cross-version workflow contract."
+    },
+    {
+      "id": "CIPHER-007",
+      "sources": [
+        "src-cipher-meta"
+      ],
+      "summary": "Use a separate architect model to write specs for Codex and self-declare TASK_COMPLETE from terminal output.",
+      "classification": "REPO",
+      "mechanism": "application_system_prompt",
+      "evidence_strength": "observed_source_only",
+      "disposition": "do_not_promote",
+      "rationale": "Part of CipherLoop's experimental meta-loop; persona and self-judged completion are not evidence for a personal Codex policy."
+    },
+    {
+      "id": "SHADOW-001",
+      "sources": [
+        "src-shadow-agents"
+      ],
+      "summary": "Trading/risk authority boundaries, paper-only execution, broker reconciliation, and live-capital prohibition.",
+      "classification": "REPO",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "retain_local",
+      "rationale": "Safety and architecture rules are inseparable from SHAD0W's domain."
+    },
+    {
+      "id": "SHADOW-002",
+      "sources": [
+        "src-shadow-agents"
+      ],
+      "summary": "Research decisions should be reconstructable from structured evidence rather than conversation history.",
+      "classification": "SKILL",
+      "mechanism": "candidate_skill",
+      "evidence_strength": "moderate",
+      "disposition": "candidate_evidence_handoff",
+      "rationale": "Useful across research-heavy repos, but too costly and prescriptive for every coding task."
+    },
+    {
+      "id": "SHADOW-003",
+      "sources": [
+        "src-shadow-agents"
+      ],
+      "summary": "Distinguish environment/dependency failures from product failures.",
+      "classification": "SKILL",
+      "mechanism": "candidate_skill",
+      "evidence_strength": "moderate",
+      "disposition": "candidate_verification_reporting",
+      "rationale": "Reusable reporting behavior; not enough recurrence to force globally."
+    },
+    {
+      "id": "TEMPER-001",
+      "sources": [
+        "src-temper-agents"
+      ],
+      "summary": "Do not optimize experiments toward confirming the thesis; preserve negative/null outcomes.",
+      "classification": "SKILL",
+      "mechanism": "candidate_skill",
+      "evidence_strength": "strong",
+      "disposition": "candidate_experiment_discipline",
+      "rationale": "Excellent reusable research procedure, but only when doing experiments."
+    },
+    {
+      "id": "TEMPER-002",
+      "sources": [
+        "src-temper-agents"
+      ],
+      "summary": "Freeze datasets, splits, metrics, seeds, thresholds, baselines, and keep calibration distinct from final test.",
+      "classification": "SKILL",
+      "mechanism": "candidate_skill",
+      "evidence_strength": "strong",
+      "disposition": "candidate_experiment_discipline",
+      "rationale": "Experimental-methodology procedure rather than universal coding behavior."
+    },
+    {
+      "id": "TEMPER-003",
+      "sources": [
+        "src-temper-agents"
+      ],
+      "summary": "Record exact handoff fields: changed, verified, unverified, commands, active hypothesis, and next bounded action.",
+      "classification": "SKILL",
+      "mechanism": "candidate_skill",
+      "evidence_strength": "moderate",
+      "disposition": "candidate_session_handoff",
+      "rationale": "Useful for long research/agent sessions but unnecessarily verbose for trivial tasks."
+    },
+    {
+      "id": "ESS-001",
+      "sources": [
+        "src-ess-agents",
+        "src-ess-skill-design",
+        "src-ess-portability"
+      ],
+      "summary": "Keep SKILL.md focused; load references/resources only when needed.",
+      "classification": "SKILL",
+      "mechanism": "skill_design",
+      "evidence_strength": "strong",
+      "disposition": "candidate_skill_development",
+      "rationale": "Matches current Codex progressive-disclosure guidance and belongs in skill authoring, not global task behavior."
+    },
+    {
+      "id": "ESS-002",
+      "sources": [
+        "src-ess-agents",
+        "src-ess-eval"
+      ],
+      "summary": "Evaluate skill activation separately from effectiveness after invocation.",
+      "classification": "SKILL",
+      "mechanism": "skill_design",
+      "evidence_strength": "strong",
+      "disposition": "candidate_skill_evaluation",
+      "rationale": "Directly applicable to LUCIDITY skill development and supported by a detailed internal methodology."
+    },
+    {
+      "id": "ESS-003",
+      "sources": [
+        "src-ess-skill-design",
+        "src-ess-eval"
+      ],
+      "summary": "A skill must earn its procedure through baseline comparison, negative cases, stopping rules, and preserved failures.",
+      "classification": "SKILL",
+      "mechanism": "skill_design",
+      "evidence_strength": "strong",
+      "disposition": "candidate_skill_development",
+      "rationale": "High-value meta-skill methodology; too specialized for global AGENTS."
+    },
+    {
+      "id": "ESS-004",
+      "sources": [
+        "src-ess-agents"
+      ],
+      "summary": "Store substantial execution plans under docs/exec-plans/active and move completed plans to completed.",
+      "classification": "REPO",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "retain_local",
+      "rationale": "Useful convention but path/layout-specific to evidence-strategy-skills."
+    },
+    {
+      "id": "ESS-005",
+      "sources": [
+        "src-ess-agents",
+        "src-ess-skill-design"
+      ],
+      "summary": "Use maturity states PROPOSED/EXPERIMENTAL/EVALUATED/STABLE/REJECTED/DEPRECATED with evidence gates.",
+      "classification": "SKILL",
+      "mechanism": "candidate_skill",
+      "evidence_strength": "strong",
+      "disposition": "candidate_skill_development",
+      "rationale": "Reusable for a curated personal skill catalog, not general coding behavior."
+    },
+    {
+      "id": "BUILDBLOCK-001",
+      "sources": [
+        "src-buildblock-agents"
+      ],
+      "summary": "Keep GitHub source facts separate from game interpretation and preserve deterministic explainable world rules.",
+      "classification": "REPO",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "retain_local",
+      "rationale": "Product/domain architecture."
+    },
+    {
+      "id": "BUILDBLOCK-002",
+      "sources": [
+        "src-buildblock-agents"
+      ],
+      "summary": "Do not introduce persistence, authentication, multiplayer, or agent phases into P0.",
+      "classification": "REPO",
+      "mechanism": "AGENTS",
+      "evidence_strength": "strong",
+      "disposition": "retain_local",
+      "rationale": "Phase-specific product constraint."
+    },
+    {
+      "id": "LUCIDITY-001",
+      "sources": [
+        "src-lucidity-skill"
+      ],
+      "summary": "Hard-bind orchestration to gpt-6-astra and multi_agent_version v2.",
+      "classification": "STALE",
+      "mechanism": "legacy_skill",
+      "evidence_strength": "strong_source_weak_portability",
+      "disposition": "remove_in_p4",
+      "rationale": "Model/runtime pin is not a durable personal workflow contract and is already isolated as legacy research."
+    },
+    {
+      "id": "LUCIDITY-002",
+      "sources": [
+        "src-lucidity-skill",
+        "src-lucidity-dump"
+      ],
+      "summary": "Depend on internal tool identities such as /root, send_message IPC, clock.sleep, notes/new_context, and fixed context thresholds.",
+      "classification": "RUNTIME_OBSERVATION",
+      "mechanism": "runtime_snapshot",
+      "evidence_strength": "historical",
+      "disposition": "isolate_in_runtime_research",
+      "rationale": "Potentially useful runtime evidence, but public support and names can change."
+    },
+    {
+      "id": "LUCIDITY-003",
+      "sources": [
+        "src-lucidity-skill"
+      ],
+      "summary": "Embed a near-black/sage UI design system in the orchestration skill.",
+      "classification": "STALE",
+      "mechanism": "legacy_skill",
+      "evidence_strength": "strong_source_low_scope_fit",
+      "disposition": "remove_in_p4",
+      "rationale": "Unrelated product-design preference contaminates a general orchestration procedure."
+    },
+    {
+      "id": "LUCIDITY-004",
+      "sources": [
+        "src-lucidity-skill"
+      ],
+      "summary": "Require a LUCIDITY Authorization Envelope before broad classes of external actions.",
+      "classification": "STALE",
+      "mechanism": "legacy_skill",
+      "evidence_strength": "historical",
+      "disposition": "replace_with_current_runtime_approval_contract_in_p4",
+      "rationale": "Duplicates and may over-constrain current Codex approval semantics; user intent and public runtime policy should govern."
+    },
+    {
+      "id": "LUCIDITY-005",
+      "sources": [
+        "src-lucidity-skill"
+      ],
+      "summary": "Progressive disclosure and conditional reference routing for skills.",
+      "classification": "SKILL",
+      "mechanism": "skill_design",
+      "evidence_strength": "strong",
+      "disposition": "retain_concept_refactor_runtime_pins",
+      "rationale": "Matches current documented Codex skill behavior; keep the portable concept."
+    },
+    {
+      "id": "LUCIDITY-006",
+      "sources": [
+        "src-lucidity-dump"
+      ],
+      "summary": "Persistent mode should close authorized open loops and verify external outcomes rather than stop at intermediate states.",
+      "classification": "RUNTIME_OBSERVATION",
+      "mechanism": "runtime_snapshot",
+      "evidence_strength": "historical_plus_current_model_guidance",
+      "disposition": "do_not_copy_verbatim",
+      "rationale": "Useful behavioral evidence, but current models already contain initiative/follow-through guidance; duplicating the host prompt risks drift."
+    },
+    {
+      "id": "LUCIDITY-007",
+      "sources": [
+        "src-lucidity-dump"
+      ],
+      "summary": "User instructions take precedence over skill instructions.",
+      "classification": "RUNTIME_OBSERVATION",
+      "mechanism": "runtime_contract",
+      "evidence_strength": "current_supported_behavior",
+      "disposition": "do_not_duplicate_globally",
+      "rationale": "Current Codex behavior already defines this; duplicate policy adds tokens without new control."
+    },
+    {
+      "id": "PROFILE-001",
+      "sources": [],
+      "summary": "research/review/readonly config profiles created in P0.",
+      "classification": "PROFILE",
+      "mechanism": "config_profile",
+      "evidence_strength": "provisional",
+      "disposition": "retain_experimental_until_p5",
+      "rationale": "Profiles are supported, but task-specific value and account interaction have not yet been evaluated."
+    },
+    {
+      "id": "AGENT-001",
+      "sources": [],
+      "summary": "Custom researcher/reviewer/security-reviewer/experiment-auditor roles.",
+      "classification": "AGENT",
+      "mechanism": "custom_subagent",
+      "evidence_strength": "hypothesis_only",
+      "disposition": "defer_to_p6",
+      "rationale": "Current docs support custom subagents, but no LUCIDITY evaluation demonstrates that these roles improve outcomes."
+    },
+    {
+      "id": "UNKNOWN-001",
+      "sources": [],
+      "summary": "AGENTS.override.md as a temporary personal override mechanism.",
+      "classification": "UNKNOWN",
+      "mechanism": "AGENTS_override",
+      "evidence_strength": "documented_not_tested",
+      "disposition": "defer",
+      "rationale": "Supported by current Codex docs, but LUCIDITY has no observed recurring use case yet."
+    },
+    {
+      "id": "UNKNOWN-002",
+      "sources": [],
+      "summary": "Codex memory as a personal workflow layer.",
+      "classification": "UNKNOWN",
+      "mechanism": "memory",
+      "evidence_strength": "documented_not_tested",
+      "disposition": "defer",
+      "rationale": "Current customization docs list memory, but persistence, inspectability, and usefulness for this workflow have not been evaluated."
+    },
+    {
+      "id": "UNKNOWN-003",
+      "sources": [],
+      "summary": "Account-specific model catalogs, credits, rate limits, and service-tier behavior for the Pro and credits accounts.",
+      "classification": "UNKNOWN",
+      "mechanism": "account_runtime",
+      "evidence_strength": "unobserved",
+      "disposition": "measure_in_p2_p5",
+      "rationale": "The existence of two accounts does not establish interchangeable capabilities or routing economics."
+    }
+  ]
+}
