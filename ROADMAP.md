@@ -6,7 +6,7 @@ Make LUCIDITY the reproducible source of truth for Jay's personal Codex workflow
 
 ## P0 — Foundation
 
-Status: active
+Status: implemented on `feat/personal-codex-control-plane`; owner installation validation still required
 
 Deliver:
 
@@ -26,9 +26,12 @@ Exit criteria:
 - installer can target a disposable `CODEX_HOME` and disposable skills directory;
 - user-global skills install to the documented `$HOME/.agents/skills` surface;
 - durable files contain no dependency on private runtime-only contracts;
-- current LUCIDITY orchestration behavior is preserved until a later migration.
+- current LUCIDITY orchestration behavior is preserved until a later migration;
+- owner validates a disposable install with the local Codex binary.
 
 ## P1 — Instruction audit
+
+Status: implemented on `feat/p1-instruction-archaeology`; CI and owner review gate completion
 
 Classify instructions from LUCIDITY and active project repositories as:
 
@@ -43,7 +46,19 @@ STALE
 UNKNOWN
 ```
 
-Produce a dated inventory and remove duplication only after review.
+Outputs:
+
+- `docs/audit/P1_INSTRUCTION_ARCHAEOLOGY.md`
+- `docs/audit/p1-classification.json`
+- `scripts/validate_instruction_inventory.py`
+
+Promotion rule: recurrence alone is insufficient. A global rule also requires broad applicability, low conflict risk, a current supported Codex mechanism, and a clear reason that AGENTS is the narrowest correct owner.
+
+P1 may make only configuration changes directly justified by the audit. Initial justified changes:
+
+- promote universal secret-handling into the global Codex contract;
+- remove redundant explicit multi-agent enablement from base config;
+- validate the classification ledger in CI.
 
 ## P2 — Account isolation
 
@@ -61,6 +76,8 @@ Adopt or adapt a small initial set covering engineering, writing, review, issue 
 
 Every skill requires a clear description, trigger/non-trigger cases, provenance, and validation.
 
+P1 candidates include `experiment-discipline`, `skill-development`, `session-handoff`, `evidence-handoff`/verification reporting, and `security-research-hygiene`. Candidate status is not implementation approval.
+
 ## P4 — Orchestration refactor
 
 Audit `skills/lucidity-orchestration`.
@@ -71,15 +88,17 @@ Split the skill only if evaluation shows narrower skills activate more reliably.
 
 ## P5 — Profiles and model routing
 
-Add profiles only for observed recurring modes such as default, research, review, read-only, and heavy.
+Add or retain profiles only for observed recurring modes such as default, research, review, read-only, and heavy.
 
 Keep model names in configuration rather than behavioral instructions. Validate model availability per account before assigning routing.
+
+The P0 research/review/readonly profiles remain provisional until this phase evaluates their usefulness.
 
 ## P6 — Custom agents
 
 Evaluate bounded roles such as researcher, reviewer, security-reviewer, and experiment-auditor.
 
-Require a measurable reason for each agent to exist.
+Require a measurable reason for each agent to exist. Do not add explicit global agent settings merely because Codex supports subagents.
 
 ## P7 — Tooling
 

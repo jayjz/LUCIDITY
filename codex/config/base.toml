@@ -9,5 +9,5 @@ web_search = "cached"
 # Keep the global contract concise while allowing richer project instructions.
 project_doc_max_bytes = 65536
 
-[agents]
-enabled = true
+# Multi-agent behavior intentionally follows the current Codex default until
+# P6 evaluates whether LUCIDITY needs explicit limits, models, or custom roles.
