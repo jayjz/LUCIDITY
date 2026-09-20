@@ -18,7 +18,7 @@ LUCIDITY
 │       ├── research.config.toml
 │       ├── review.config.toml
 │       └── readonly.config.toml
-├── skills/                   reusable Codex procedures
+├── skills/                   source for personal user-global skills
 ├── scripts/
 │   ├── install.sh            dry-run-first installer
 │   ├── codex-account         isolated account launcher
@@ -26,6 +26,19 @@ LUCIDITY
 ├── toolkit/                  legacy orchestration research
 ├── schemas/                  legacy orchestration schemas
 └── research/runtime-snapshots/
+```
+
+Installed state is split across two documented Codex surfaces:
+
+```text
+CODEX_HOME
+├── AGENTS.md
+├── config.toml
+├── *.config.toml
+└── auth/session/log state
+
+$HOME/.agents/skills
+└── personal user-global skills
 ```
 
 ## Two-account setup
@@ -37,13 +50,19 @@ Keep each ChatGPT/Codex account in a separate `CODEX_HOME`:
 ~/.codex-credits
 ```
 
-Install LUCIDITY into either home with a dry run first:
+Both accounts share the same user-global skill library at `$HOME/.agents/skills` when they run as the same OS user.
+
+Dry-run installation first:
 
 ```bash
 bash scripts/install.sh --home "$HOME/.codex-pro"
-bash scripts/install.sh --home "$HOME/.codex-pro" --apply
-
 bash scripts/install.sh --home "$HOME/.codex-credits"
+```
+
+Apply after reviewing the diff:
+
+```bash
+bash scripts/install.sh --home "$HOME/.codex-pro" --apply
 bash scripts/install.sh --home "$HOME/.codex-credits" --apply
 ```
 
@@ -99,15 +118,19 @@ Run:
 bash scripts/doctor.sh
 ```
 
-The doctor currently checks that configuration TOML parses, obvious credential material is not tracked in the managed configuration, the global instruction file exists, and the Codex executable/version can be observed when installed.
+The doctor checks that configuration TOML parses, obvious credential material is not tracked in managed configuration, the global instruction file exists, and the Codex executable/version can be observed when installed.
 
-For installation testing, use a disposable home before touching either active account:
+For installation testing, isolate both destinations:
 
 ```bash
-tmp_home="$(mktemp -d)"
-bash scripts/install.sh --home "$tmp_home"
-bash scripts/install.sh --home "$tmp_home" --apply
-CODEX_HOME="$tmp_home" codex --ask-for-approval never "Summarize the current instructions."
+tmp_root="$(mktemp -d)"
+bash scripts/install.sh \
+  --home "$tmp_root/codex-home" \
+  --skills-dir "$tmp_root/skills" \
+  --apply
+
+CODEX_HOME="$tmp_root/codex-home" codex --ask-for-approval never \
+  "Summarize the current instructions."
 ```
 
 ## Legacy orchestration toolkit
@@ -116,7 +139,7 @@ The original LUCIDITY work remains under `toolkit/`, `schemas/`, `skills/lucidit
 
 That material is research evidence from an earlier Codex runtime. It is not automatically a durable public configuration contract.
 
-The roadmap intentionally preserves it until the instruction audit classifies each part as:
+The roadmap preserves it until the instruction audit classifies each part as:
 
 ```text
 GLOBAL
