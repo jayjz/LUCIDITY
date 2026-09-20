@@ -4,10 +4,13 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage:
-  bash scripts/install.sh --home PATH [--apply]
+  bash scripts/install.sh --home PATH [--skills-dir PATH] [--apply]
 
-Default mode is a dry run. --apply writes only LUCIDITY-managed files into
-the target CODEX_HOME.
+Default mode is a dry run. --apply writes only LUCIDITY-managed files.
+
+--home controls CODEX_HOME configuration/account state.
+--skills-dir defaults to $HOME/.agents/skills, the documented user-global
+Codex skill location.
 
 The installer never copies, deletes, or modifies auth.json, sessions, logs,
 history, caches, or other account state.
@@ -16,6 +19,7 @@ EOF
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 target_home=""
+target_skills="${HOME}/.agents/skills"
 apply=0
 
 while [[ $# -gt 0 ]]; do
@@ -23,6 +27,11 @@ while [[ $# -gt 0 ]]; do
     --home)
       [[ $# -ge 2 ]] || { usage >&2; exit 2; }
       target_home="$2"
+      shift 2
+      ;;
+    --skills-dir)
+      [[ $# -ge 2 ]] || { usage >&2; exit 2; }
+      target_skills="$2"
       shift 2
       ;;
     --apply)
@@ -42,6 +51,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 [[ -n "$target_home" ]] || { echo "--home is required" >&2; exit 2; }
+[[ -n "$target_skills" ]] || { echo "--skills-dir must not be empty" >&2; exit 2; }
 
 src_agents="$repo_root/codex/AGENTS.md"
 src_config="$repo_root/codex/config/base.toml"
@@ -79,6 +89,7 @@ show_tree_action() {
 }
 
 echo "Target CODEX_HOME: $target_home"
+echo "Target user skills: $target_skills"
 show_file_action "$src_agents" "$target_home/AGENTS.md"
 show_file_action "$src_config" "$target_home/config.toml"
 
@@ -87,7 +98,7 @@ for profile in "$src_config_dir"/*.config.toml; do
   show_file_action "$profile" "$target_home/$(basename "$profile")"
 done
 
-show_tree_action "$src_skills" "$target_home/skills"
+show_tree_action "$src_skills" "$target_skills"
 echo "PRESERVE  $target_home/auth.json"
 echo "PRESERVE  runtime sessions/logs/state"
 
@@ -106,7 +117,8 @@ for profile in "$src_config_dir"/*.config.toml; do
   install -m 0644 "$profile" "$target_home/$(basename "$profile")"
 done
 
-mkdir -p "$target_home/skills"
-cp -a "$src_skills/." "$target_home/skills/"
+mkdir -p "$target_skills"
+cp -a "$src_skills/." "$target_skills/"
 
-echo "Installed LUCIDITY-managed configuration into $target_home"
+echo "Installed LUCIDITY-managed Codex config into $target_home"
+echo "Installed LUCIDITY personal skills into $target_skills"
