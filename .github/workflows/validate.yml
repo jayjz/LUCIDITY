@@ -1,0 +1,46 @@
+name: Validate LUCIDITY
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - feat/personal-codex-control-plane
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check shell syntax
+        run: |
+          bash -n scripts/install.sh
+          bash -n scripts/doctor.sh
+          bash -n scripts/codex-account
+
+      - name: Parse Codex TOML
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import tomllib
+
+          paths = [Path("codex/config/base.toml"), *sorted(Path("codex/config").glob("*.config.toml"))]
+          for path in paths:
+              with path.open("rb") as handle:
+                  tomllib.load(handle)
+              print(f"parsed {path}")
+          PY
+
+      - name: Check credential files are not tracked
+        run: |
+          if git ls-files | grep -Eq '(^|/)(auth\.json|[^/]*\.auth\.json)$'; then
+            echo "credential-shaped auth file is tracked" >&2
+            exit 1
+          fi
+
+      - name: Run repository doctor
+        run: bash scripts/doctor.sh
