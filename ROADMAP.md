@@ -14,13 +14,17 @@ Deliver:
 - global `codex/AGENTS.md`
 - architecture and roadmap
 - stable base config template
+- model-agnostic profiles
 - diff-first installer
+- shared personal skill installation
 - separate-account launcher convention
+- static doctor checks
 
 Exit criteria:
 
 - no credentials are tracked;
-- installer can target a disposable `CODEX_HOME`;
+- installer can target a disposable `CODEX_HOME` and disposable skills directory;
+- user-global skills install to the documented `$HOME/.agents/skills` surface;
 - durable files contain no dependency on private runtime-only contracts;
 - current LUCIDITY orchestration behavior is preserved until a later migration.
 
@@ -47,7 +51,9 @@ Validate independent `~/.codex-pro` and `~/.codex-credits` homes.
 
 Add Linux/macOS and Windows launchers.
 
-Do not assume either account's model catalog or billing behavior. Record observed account capabilities separately.
+Do not assume either account's model catalog, credit behavior, service tier, or rate limits. Record observed account capabilities separately.
+
+Personal skills remain shared at `$HOME/.agents/skills` unless later evidence justifies a different account-isolation mechanism.
 
 ## P3 — Core skills
 
@@ -77,7 +83,7 @@ Require a measurable reason for each agent to exist.
 
 ## P7 — Tooling
 
-Add doctor, installed-config diff, provenance lockfile, update command, and configuration validation.
+Add installed-config diff, provenance lockfile, update command, and deeper configuration validation.
 
 Add MCP servers only for recurring workflows with clear trust and secret boundaries.
 
