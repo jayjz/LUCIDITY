@@ -14,20 +14,18 @@ LUCIDITY source
     +-- codex/AGENTS.md       durable global behavior
     +-- codex/config/         user configuration and profiles
     +-- codex/agents/         specialized Codex subagents
-    +-- skills/               repeatable workflows
+    +-- skills/               personal reusable workflows
     +-- scripts/              install, diff, doctor, launch
     +-- research/             dated runtime evidence
     |
-    v
-CODEX_HOME
+    +--> CODEX_HOME
+    |      +-- AGENTS.md
+    |      +-- config.toml
+    |      +-- <profile>.config.toml
+    |      +-- auth/session/log state
     |
-    +-- AGENTS.md
-    +-- config.toml
-    +-- <profile>.config.toml
-    +-- agents/
-    +-- skills/
-    +-- auth.json             local only
-    +-- sessions/logs/state   local only
+    +--> $HOME/.agents/skills
+           +-- user-global skills
 ```
 
 ## Ownership rules
@@ -50,13 +48,17 @@ LUCIDITY must not duplicate those constraints globally.
 
 A skill owns a repeatable procedure with a clear trigger and non-trigger. Use progressive disclosure: keep the entrypoint focused and load references or scripts only when needed.
 
+Codex discovers user-global skills from `$HOME/.agents/skills`. Repository skills belong under the applicable repository's `.agents/skills` tree.
+
+LUCIDITY's `skills/` directory is the version-controlled source used to install the personal user-global skill set. Both Codex accounts share that skill set when they run under the same OS user.
+
 ### Profiles
 
 Profiles select task operating modes such as research, review, or read-only behavior. Profiles do not represent user accounts.
 
 ### Accounts
 
-Separate accounts use separate `CODEX_HOME` directories so authentication, sessions, logs, and account state cannot collide.
+Separate accounts use separate `CODEX_HOME` directories so configuration, authentication, sessions, logs, and account state cannot collide.
 
 Initial convention:
 
@@ -65,7 +67,9 @@ Initial convention:
 ~/.codex-credits
 ```
 
-LUCIDITY may install the same policy into both homes, but it must never copy or version `auth.json`.
+LUCIDITY may install the same policy and profiles into both homes, but it must never copy or version `auth.json`.
+
+Changing `CODEX_HOME` does not create a separate user-global skill directory. Account-specific skill sets are not part of the initial design.
 
 ### Custom agents
 
@@ -85,4 +89,4 @@ Store them under `research/runtime-snapshots/` with date/version metadata.
 4. Keep model routing replaceable.
 5. Make installation diff-first and non-destructive.
 6. Evaluate activation and effectiveness of reusable skills.
-7. Record configuration provenance: LUCIDITY commit, Codex version, and relevant profile.
+7. Record configuration provenance: LUCIDITY commit, Codex version, account home, and relevant profile.
